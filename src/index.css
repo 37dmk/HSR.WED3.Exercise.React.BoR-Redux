@@ -1,0 +1,11 @@
+body {
+  background: #f7f7f7;
+}
+
+.HomeScreen > .column,
+.LoginScreen > .column,
+.LogoutScreen > .column,
+.RegistrationScreen > .column {
+  max-width: 450px;
+  margin-top: 8em;
+}
