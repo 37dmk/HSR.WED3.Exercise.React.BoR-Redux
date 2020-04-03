@@ -7,6 +7,7 @@ class Login extends React.Component {
   state = {
     login: "",
     password: "",
+    loading: false,
     error: undefined,
     redirectToReferrer: false
   };
@@ -21,12 +22,17 @@ class Login extends React.Component {
 
   onSubmit = event => {
     event.preventDefault();
+    this.setState({ loading: true });
     const { login, password } = this.state;
     this.props.authenticate(login, password, error => {
       if (error) {
-        this.setState({ error });
+        this.setState({ error, loading: false });
       } else {
-        this.setState({ redirectToReferrer: error === null, error: null });
+        this.setState({
+          redirectToReferrer: error === null,
+          error: null,
+          loading: false
+        });
       }
     });
   };
@@ -35,7 +41,7 @@ class Login extends React.Component {
     const { from } = this.props.location.state || {
       from: { pathname: "/dashboard" }
     };
-    const { redirectToReferrer, error } = this.state;
+    const { redirectToReferrer, error, loading } = this.state;
 
     if (redirectToReferrer) {
       return <Redirect to={from} />;
@@ -69,6 +75,7 @@ class Login extends React.Component {
               </Form.Field>
               <Button
                 primary
+                loading={loading}
                 onClick={this.onSubmit}
                 size="large"
                 fluid={true}
