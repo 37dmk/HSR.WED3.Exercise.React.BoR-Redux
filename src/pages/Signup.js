@@ -1,115 +1,92 @@
-import React from "react";
+import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Button, Grid, Header } from "semantic-ui-react";
 import { Form, Segment, Input, Message } from "semantic-ui-react";
 
 import { signup } from "../api";
 
-class Signup extends React.Component {
-  state = {
-    login: "",
-    firstname: "",
-    lastname: "",
-    password: "",
-    error: null,
-    redirectToReferrer: false
-  };
+function Signup() {
+  const [login, setLogin] = useState("");
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [redirectToReferrer, setRedirectToReferrrer] = useState(false);
 
-  onLoginChanged = event => {
-    this.setState({ login: event.target.value });
-  };
-
-  onFirstNameChanged = event => {
-    this.setState({ firstname: event.target.value });
-  };
-
-  onLastNameChanged = event => {
-    this.setState({ lastname: event.target.value });
-  };
-
-  onPasswordChanged = event => {
-    this.setState({ password: event.target.value });
-  };
-
-  onSubmit = event => {
+  const onSubmit = event => {
     event.preventDefault();
-    const { login, firstname, lastname, password } = this.state;
     signup(login, firstname, lastname, password)
       .then(result => {
-        console.log("Signup result ", result);
-        this.setState({ redirectToReferrer: true, error: null });
+        setRedirectToReferrrer(true);
+        setError(null);
       })
-      .catch(error => this.setState({ error }));
+      .catch(setError);
   };
 
-  render() {
-    const { redirectToReferrer, error } = this.state;
-
-    if (redirectToReferrer) {
-      return <Redirect to="/login" />;
-    }
-
-    return (
-      <Grid className="LoginScreen" verticalAlign="middle" centered={true}>
-        <Grid.Column>
-          <Header as="h2" content="Bank of Rapperswil" />
-          <Form size="large" error={error}>
-            <Segment stacked={true}>
-              <Header as="h3" content="Registrieren" />
-              <Form.Field>
-                <Input
-                  onChange={this.onLoginChanged}
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="Login"
-                  value={this.state.login}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Input
-                  onChange={this.onFirstNameChanged}
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="Vorname"
-                  value={this.state.firstname}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Input
-                  onChange={this.onLastNameChanged}
-                  icon="user"
-                  iconPosition="left"
-                  placeholder="Nachname"
-                  value={this.state.lastname}
-                />
-              </Form.Field>
-              <Form.Field>
-                <Input
-                  onChange={this.onPasswordChanged}
-                  icon="lock"
-                  iconPosition="left"
-                  placeholder="Passwort"
-                  type="password"
-                  value={this.state.password}
-                />
-              </Form.Field>
-              <Button
-                primary
-                onClick={this.onSubmit}
-                size="large"
-                fluid={true}
-                content="Log-in"
-              />
-            </Segment>
-            <Message error content={error} />
-          </Form>
-          <Message>
-            <Link to="/">Zurück zur Startseite</Link>
-          </Message>
-        </Grid.Column>
-      </Grid>
-    );
+  if (redirectToReferrer) {
+    return <Redirect to="/login" />;
   }
+
+  return (
+    <Grid className="LoginScreen" verticalAlign="middle" centered={true}>
+      <Grid.Column>
+        <Header as="h2" content="Bank of Rapperswil" />
+        <Form size="large" error={error}>
+          <Segment stacked={true}>
+            <Header as="h3" content="Registrieren" />
+            <Form.Field>
+              <Input
+                onChange={event => setLogin(event.target.value)}
+                icon="user"
+                iconPosition="left"
+                placeholder="Login"
+                value={login}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Input
+                onChange={event => setFirstname(event.target.value)}
+                icon="user"
+                iconPosition="left"
+                placeholder="Vorname"
+                value={firstname}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Input
+                onChange={event => setLastname(event.target.value)}
+                icon="user"
+                iconPosition="left"
+                placeholder="Nachname"
+                value={lastname}
+              />
+            </Form.Field>
+            <Form.Field>
+              <Input
+                onChange={event => setPassword(event.target.value)}
+                icon="lock"
+                iconPosition="left"
+                placeholder="Passwort"
+                type="password"
+                value={password}
+              />
+            </Form.Field>
+            <Button
+              primary
+              onClick={onSubmit}
+              size="large"
+              fluid={true}
+              content="Log-in"
+            />
+          </Segment>
+          <Message error content={error} />
+        </Form>
+        <Message>
+          <Link to="/">Zurück zur Startseite</Link>
+        </Message>
+      </Grid.Column>
+    </Grid>
+  );
 }
 
 export default Signup;
