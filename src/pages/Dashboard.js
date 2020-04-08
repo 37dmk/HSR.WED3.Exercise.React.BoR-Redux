@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Grid,
@@ -19,95 +19,87 @@ import {
   getTransactions
 } from "../api";
 
-class Dashboard extends React.Component {
-  state = {
-    user: undefined,
-    transactions: undefined,
-    amount: undefined
-  };
+function Dashboard({ token }) {
+  const [user, setUser] = useState(undefined);
+  const [transactions, setTransactions] = useState(undefined);
+  const [amount, setAmount] = useState(undefined);
 
-  componentDidMount() {
-    const { user, transactions } = this.state;
-    if (!user) {
-      this.fetchAccountDetails();
-    }
-    if (!transactions) {
-      this.fetchTransactions();
-    }
-  }
-
-  fetchAccountDetails = () => {
-    const { token } = this.props;
-    getAccountDetails(token).then(({ amount, owner: user }) =>
-      this.setState({ user, amount })
-    );
-  };
-
-  fetchTransactions = () => {
-    const { token } = this.props;
-    getTransactions(token).then(({ result: transactions }) =>
-      this.setState({ transactions })
-    );
-  };
-
-  handleSubmit = (target: AccountNr, amount) => {
-    return transfer(target, amount, this.props.token).then(result => {
-      // Transfer succeeded, we just re-fetch the account details
-      // instead of calculating the balance ourselves
-      this.fetchAccountDetails();
-      // same for the transactions
-      this.fetchTransactions();
-      return result; // to the caller, i.e., TransferFunds
-    });
-  };
-
-  isValidTargetAccount = (accountNr: AccountNr) => {
-    return getAccount(accountNr, this.props.token).then(
+  const isValidTargetAccount = accountNr => {
+    return getAccount(accountNr, token).then(
       result => true,
       failure => false
     );
   };
 
-  render() {
-    const { user, transactions, amount } = this.state;
-    if (!user || !transactions) {
-      return (
-        <Dimmer active inverted>
-          <Loader inverted>Loading</Loader>
-        </Dimmer>
+  const handleSubmit = (target, amount) => {
+    transfer(target, amount, token).then(result => {
+      // Transfer succeeded, we just re-fetch the account details
+      // instead of calculating the balance ourselves
+      getAccountDetails(token).then(({ amount, owner: user }) => {
+        setUser(user);
+        setAmount(amount);
+      });
+      // same for the transactions
+      getTransactions(token).then(({ result: transactions }) =>
+        setTransactions(transactions)
+      );
+    });
+  };
+
+  useEffect(() => {
+    if (!user) {
+      getAccountDetails(token).then(({ amount, owner: user }) => {
+        setUser(user);
+        setAmount(amount);
+      });
+    }
+  }, [token, user]);
+
+  useEffect(() => {
+    if (!transactions) {
+      getTransactions(token).then(({ result: transactions }) =>
+        setTransactions(transactions)
       );
     }
+  }, [token, transactions]);
+
+  if (!user || !transactions) {
     return (
-      <Segment.Group>
-        <Segment>
-          <Header as="h1">Kontoübersicht {user.accountNr}</Header>
-        </Segment>
-        <Segment>
-          <Grid>
-            <Grid.Column width={6}>
-              <Header as="h3" content="Neue Zahlung" />
-              <TransferFundsForm
-                accountNr={user.accountNr}
-                balance={amount}
-                isValidTargetAccount={this.isValidTargetAccount}
-                onSubmit={this.handleSubmit}
-              />
-            </Grid.Column>
-            <Grid.Column width={10}>
-              <Header as="h3" content="Letzte Zahlungen" />
-              <TransactionsTable
-                user={user}
-                transactions={transactions}
-              ></TransactionsTable>
-              <Button floated="right" as={Link} to={"/transactions"}>
-                Alle Transaktionen anzeigen
-              </Button>
-            </Grid.Column>
-          </Grid>
-        </Segment>
-      </Segment.Group>
+      <Dimmer active inverted>
+        <Loader inverted>Loading</Loader>
+      </Dimmer>
     );
   }
+  return (
+    <Segment.Group>
+      <Segment>
+        <Header as="h1">Kontoübersicht {user.accountNr}</Header>
+      </Segment>
+      <Segment>
+        <Grid>
+          <Grid.Column width={6}>
+            <Header as="h3" content="Neue Zahlung" />
+            <TransferFundsForm
+              accountNr={user.accountNr}
+              balance={amount}
+              isValidTargetAccount={isValidTargetAccount}
+              onSubmit={handleSubmit}
+            />
+          </Grid.Column>
+          <Grid.Column width={10}>
+            <Header as="h3" content="Letzte Zahlungen" />
+            <TransactionsTable
+              user={user}
+              transactions={transactions}
+            ></TransactionsTable>
+            <Button floated="right" as={Link} to={"/transactions"}>
+              Alle Transaktionen anzeigen
+            </Button>
+          </Grid.Column>
+        </Grid>
+      </Segment>
+    </Segment.Group>
+  );
 }
 
 export default Dashboard;
