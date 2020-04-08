@@ -26,6 +26,16 @@ class Dashboard extends React.Component {
     amount: undefined
   };
 
+  componentDidMount() {
+    const { user, transactions } = this.state;
+    if (!user) {
+      this.fetchAccountDetails();
+    }
+    if (!transactions) {
+      this.fetchTransactions();
+    }
+  }
+
   fetchAccountDetails = () => {
     const { token } = this.props;
     getAccountDetails(token).then(({ amount, owner: user }) =>
