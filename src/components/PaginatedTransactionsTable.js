@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Menu, Icon } from "semantic-ui-react";
 import TransactionsTable from "../components/TransactionsTable";
 
-export function PaginagetTransactionsTable({
+export function PaginatedTransactionsTable({
   user,
   transactions,
   skip,

@@ -10,9 +10,9 @@ import {
 import Moment from "moment";
 
 import { getTransactions } from "../api";
-import { YearDropdown } from "./YearDropdown";
-import { MonthDropdown } from "./MonthDropdown";
-import { PaginagetTransactionsTable } from "./PaginagetTransactionsTable";
+import { YearDropdown } from "../components/YearDropdown";
+import { MonthDropdown } from "../components/MonthDropdown";
+import { PaginatedTransactionsTable } from "../components/PaginatedTransactionsTable";
 
 class Transactions extends React.Component {
   itemsPerPage = 10;
@@ -123,7 +123,7 @@ class Transactions extends React.Component {
             </Grid.Column>
           </Grid>
           {transactions.length > 0 ? (
-            <PaginagetTransactionsTable
+            <PaginatedTransactionsTable
               user={user}
               transactions={transactions}
               skip={skip}
