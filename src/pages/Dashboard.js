@@ -5,44 +5,44 @@ import {
   Header,
   Dimmer,
   Loader,
-  Segment
+  Segment,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { fetchTransactions } from "../actions";
 
 import TransferFundsForm from "../components/TransferFundsForm";
 import TransactionsTable from "../components/TransactionsTable";
 
-import {
-  getAccountDetails,
-  getAccount,
-  transfer,
-  getTransactions
-} from "../api";
+import { getAccountDetails, getAccount, transfer } from "../api";
 
-function Dashboard({ token }) {
+function Dashboard({
+  token,
+  transactions /* from mapStateToProps */,
+  isLoading /* from mapStateToProps */,
+  error /* from mapStateToProps */,
+  dispatch /* from connect */,
+}) {
   const [user, setUser] = useState(undefined);
-  const [transactions, setTransactions] = useState(undefined);
   const [amount, setAmount] = useState(undefined);
 
-  const isValidTargetAccount = accountNr => {
+  const isValidTargetAccount = (accountNr) => {
     return getAccount(accountNr, token).then(
-      result => true,
-      failure => false
+      (result) => true,
+      (failure) => false
     );
   };
 
   const handleSubmit = (target, amount) => {
-    transfer(target, amount, token).then(result => {
+    transfer(target, amount, token).then((result) => {
       // Transfer succeeded, we just re-fetch the account details
       // instead of calculating the balance ourselves
       getAccountDetails(token).then(({ amount, owner: user }) => {
         setUser(user);
         setAmount(amount);
       });
-      // same for the transactions
-      getTransactions(token).then(({ result: transactions }) =>
-        setTransactions(transactions)
-      );
+      dispatch(fetchTransactions(token));
     });
   };
 
@@ -57,13 +57,11 @@ function Dashboard({ token }) {
 
   useEffect(() => {
     if (!transactions) {
-      getTransactions(token).then(({ result: transactions }) =>
-        setTransactions(transactions)
-      );
+      dispatch(fetchTransactions(token));
     }
-  }, [token, transactions]);
+  }, [dispatch, token, transactions]);
 
-  if (!user || !transactions) {
+  if (!user || !transactions || isLoading) {
     return (
       <Dimmer active inverted>
         <Loader inverted>Loading</Loader>
@@ -102,4 +100,12 @@ function Dashboard({ token }) {
   );
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    transactions: state.transactions.entries,
+    isLoading: state.transactions.isLoading,
+    error: state.transactions.error,
+  };
+};
+
+export default connect(mapStateToProps)(Dashboard);
