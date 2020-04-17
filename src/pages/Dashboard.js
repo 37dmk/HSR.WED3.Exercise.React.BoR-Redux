@@ -24,7 +24,9 @@ function Dashboard({
   transactions /* from mapStateToProps */,
   isLoading /* from mapStateToProps */,
   error /* from mapStateToProps */,
-  dispatch /* from connect */,
+  fetchTransactions /* from mapDispatchToProps */,
+  fetchAccountDetails /* from mapDispatchToProps */,
+  transfer /* from mapDispatchToProps */,
 }) {
   const isValidTargetAccount = (accountNr) => {
     return getAccount(accountNr, token).then(
@@ -34,20 +36,20 @@ function Dashboard({
   };
 
   const handleSubmit = (target, amount) => {
-    dispatch(transfer(target, amount, token));
+    transfer(target, amount, token);
   };
 
   useEffect(() => {
     if (!user) {
-      dispatch(fetchAccountDetails(token));
+      fetchAccountDetails(token);
     }
-  }, [dispatch, token, user]);
+  }, [fetchAccountDetails, token, user]);
 
   useEffect(() => {
     if (!transactions) {
-      dispatch(fetchTransactions(token));
+      fetchTransactions(token);
     }
-  }, [dispatch, token, transactions]);
+  }, [fetchTransactions, token, transactions]);
 
   if (!user || !transactions || isLoading) {
     return (
@@ -98,4 +100,22 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Dashboard);
+const mapDispatchToProps = {
+  fetchTransactions,
+  fetchAccountDetails,
+  transfer,
+};
+
+/* Variante von mapDispatchToProps
+
+const mapDispatchToProps = (dispatch, { token }) => {
+  return {
+    fetchTransactions: () => dispatch(fetchTransactions(token)),
+    fetchAccountDetails: () => dispatch(fetchAccountDetails(token)),
+    handleTransfer: (target, amount) =>
+      dispatch(transfer(target, amount, token)),
+  };
+};
+*/
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
