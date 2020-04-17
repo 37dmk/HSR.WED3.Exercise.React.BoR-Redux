@@ -27,3 +27,14 @@ export function fetchAccountDetails(token) {
       );
   };
 }
+
+export function transfer(target, amount, token) {
+  return (dispatch) => {
+    api.transfer(target, amount, token).then((result) => {
+      // Transfer succeeded, we just re-fetch the account details
+      // instead of calculating the balance ourselves
+      fetchAccountDetails(token)(dispatch);
+      fetchTransactions(token)(dispatch);
+    });
+  };
+}

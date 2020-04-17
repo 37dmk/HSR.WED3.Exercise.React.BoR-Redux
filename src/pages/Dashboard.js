@@ -10,12 +10,12 @@ import {
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { fetchTransactions, fetchAccountDetails } from "../actions";
+import { fetchTransactions, fetchAccountDetails, transfer } from "../actions";
 
 import TransferFundsForm from "../components/TransferFundsForm";
 import TransactionsTable from "../components/TransactionsTable";
 
-import { getAccount, transfer } from "../api";
+import { getAccount } from "../api";
 
 function Dashboard({
   token,
@@ -34,12 +34,7 @@ function Dashboard({
   };
 
   const handleSubmit = (target, amount) => {
-    transfer(target, amount, token).then((result) => {
-      // Transfer succeeded, we just re-fetch the account details
-      // instead of calculating the balance ourselves
-      dispatch(fetchAccountDetails(token));
-      dispatch(fetchTransactions(token));
-    });
+    dispatch(transfer(target, amount, token));
   };
 
   useEffect(() => {
