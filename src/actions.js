@@ -12,3 +12,18 @@ export function fetchTransactions(token) {
       .catch((error) => dispatch({ type: "FETCH_TRANSACTIONS_FAILED", error }));
   };
 }
+
+export function fetchAccountDetails(token) {
+  return (dispatch) => {
+    dispatch({ type: "FETCH_ACCOUNT_DETAILS_STARTED" });
+
+    return api
+      .getAccountDetails(token)
+      .then(({ amount: balance, owner: user }) => {
+        dispatch({ type: "FETCH_ACCOUNT_DETAILS_SUCCEEDED", balance, user });
+      })
+      .catch((error) =>
+        dispatch({ type: "FETCH_ACCOUNT_DETAILS_FAILED", error })
+      );
+  };
+}

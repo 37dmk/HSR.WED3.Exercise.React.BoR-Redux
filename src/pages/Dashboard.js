@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Grid,
@@ -10,23 +10,22 @@ import {
 import { Link } from "react-router-dom";
 
 import { connect } from "react-redux";
-import { fetchTransactions } from "../actions";
+import { fetchTransactions, fetchAccountDetails } from "../actions";
 
 import TransferFundsForm from "../components/TransferFundsForm";
 import TransactionsTable from "../components/TransactionsTable";
 
-import { getAccountDetails, getAccount, transfer } from "../api";
+import { getAccount, transfer } from "../api";
 
 function Dashboard({
   token,
+  user,
+  balance,
   transactions /* from mapStateToProps */,
   isLoading /* from mapStateToProps */,
   error /* from mapStateToProps */,
   dispatch /* from connect */,
 }) {
-  const [user, setUser] = useState(undefined);
-  const [amount, setAmount] = useState(undefined);
-
   const isValidTargetAccount = (accountNr) => {
     return getAccount(accountNr, token).then(
       (result) => true,
@@ -38,22 +37,16 @@ function Dashboard({
     transfer(target, amount, token).then((result) => {
       // Transfer succeeded, we just re-fetch the account details
       // instead of calculating the balance ourselves
-      getAccountDetails(token).then(({ amount, owner: user }) => {
-        setUser(user);
-        setAmount(amount);
-      });
+      dispatch(fetchAccountDetails(token));
       dispatch(fetchTransactions(token));
     });
   };
 
   useEffect(() => {
     if (!user) {
-      getAccountDetails(token).then(({ amount, owner: user }) => {
-        setUser(user);
-        setAmount(amount);
-      });
+      dispatch(fetchAccountDetails(token));
     }
-  }, [token, user]);
+  }, [dispatch, token, user]);
 
   useEffect(() => {
     if (!transactions) {
@@ -79,7 +72,7 @@ function Dashboard({
             <Header as="h3" content="Neue Zahlung" />
             <TransferFundsForm
               accountNr={user.accountNr}
-              balance={amount}
+              balance={balance}
               isValidTargetAccount={isValidTargetAccount}
               onSubmit={handleSubmit}
             />
@@ -103,6 +96,8 @@ function Dashboard({
 const mapStateToProps = (state) => {
   return {
     transactions: state.transactions.entries,
+    user: state.user.user,
+    balance: state.user.balance,
     isLoading: state.transactions.isLoading,
     error: state.transactions.error,
   };
