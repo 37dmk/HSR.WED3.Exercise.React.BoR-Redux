@@ -50,3 +50,25 @@ const reducers = combineReducers({
 });
 
 export default reducers;
+
+// Selectors:
+
+export function getTransactions(state) {
+  return state.transactions.entries;
+}
+
+export function getUser(state) {
+  return state.user.user;
+}
+
+export function getBalance(state) {
+  return state.user.balance;
+}
+
+export function isLoadingTransactions(state) {
+  return state.transactions.isLoading;
+}
+
+export function getTransactionLoadingError(state) {
+  return state.transactions.error;
+}

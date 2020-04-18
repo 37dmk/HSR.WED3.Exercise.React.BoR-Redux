@@ -16,6 +16,13 @@ import TransferFundsForm from "../components/TransferFundsForm";
 import TransactionsTable from "../components/TransactionsTable";
 
 import { getAccount } from "../api";
+import {
+  getTransactionLoadingError,
+  isLoadingTransactions,
+  getBalance,
+  getUser,
+  getTransactions,
+} from "../reducers";
 
 function Dashboard({
   token,
@@ -92,11 +99,11 @@ function Dashboard({
 
 const mapStateToProps = (state) => {
   return {
-    transactions: state.transactions.entries,
-    user: state.user.user,
-    balance: state.user.balance,
-    isLoading: state.transactions.isLoading,
-    error: state.transactions.error,
+    transactions: getTransactions(state),
+    user: getUser(state),
+    balance: getBalance(state),
+    isLoading: isLoadingTransactions(state),
+    error: getTransactionLoadingError(state),
   };
 };
 
