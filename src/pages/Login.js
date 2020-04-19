@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Redirect, Link } from "react-router-dom";
 import { Button, Grid, Header } from "semantic-ui-react";
 import { Form, Segment, Input, Message } from "semantic-ui-react";
+import { authenticate } from "../actions";
+import { connect } from "react-redux";
 
 function Login({ location, authenticate }) {
   const [login, setLogin] = useState("");
@@ -25,7 +27,7 @@ function Login({ location, authenticate }) {
   };
 
   const { from } = location.state || {
-    from: { pathname: "/dashboard" }
+    from: { pathname: "/dashboard" },
   };
 
   if (redirectToReferrer) {
@@ -41,7 +43,7 @@ function Login({ location, authenticate }) {
             <Header as="h3" content="Einloggen" />
             <Form.Field>
               <Input
-                onChange={event => setLogin(event.target.value)}
+                onChange={(event) => setLogin(event.target.value)}
                 icon="user"
                 iconPosition="left"
                 placeholder="Login"
@@ -50,7 +52,7 @@ function Login({ location, authenticate }) {
             </Form.Field>
             <Form.Field>
               <Input
-                onChange={event => setPassword(event.target.value)}
+                onChange={(event) => setPassword(event.target.value)}
                 icon="lock"
                 iconPosition="left"
                 placeholder="Password"
@@ -77,4 +79,12 @@ function Login({ location, authenticate }) {
   );
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = {
+  authenticate,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

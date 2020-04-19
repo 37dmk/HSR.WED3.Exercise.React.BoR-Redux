@@ -67,12 +67,7 @@ function App({ isAuthenticated, user, token, ...props }) {
             <Home {...props} isAuthenticated={isAuthenticated} />
           )}
         />
-        <Route
-          path="/login"
-          render={(props) => (
-            <Login {...props} authenticate={this.props.authenticate} />
-          )}
-        />
+        <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <PrivateRoute
           isAuthenticated={isAuthenticated}
