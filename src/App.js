@@ -43,7 +43,8 @@ function App({ isAuthenticated, user, token, ...props }) {
                 <Menu.Item
                   name={`Logout ${user.firstname} ${user.lastname}`}
                   onClick={() => {
-                    props.signout(() => history.push("/"));
+                    props.signout();
+                    history.push("/");
                   }}
                 />
               </Menu.Menu>

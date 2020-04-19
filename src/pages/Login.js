@@ -15,15 +15,16 @@ function Login({ location, authenticate }) {
   const onSubmit = event => {
     event.preventDefault();
     setLoading(true);
-    authenticate(login, password, error => {
-      setLoading(false);
-      if (error) {
-        setError(error);
-      } else {
+    authenticate(login, password)
+      .then(() => {
+        setLoading(false);
         setError(undefined);
         setRedirectToReferrer(true);
-      }
-    });
+      })
+      .catch((error) => {
+        setLoading(false);
+        setError(error);
+      });
   };
 
   const { from } = location.state || {
