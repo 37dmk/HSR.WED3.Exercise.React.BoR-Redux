@@ -44,9 +44,50 @@ function user(state = initialUserState, action) {
   }
 }
 
+function getInitialAuthenticationState() {
+  const token = sessionStorage.getItem("token");
+  const user = sessionStorage.getItem("user");
+  if (token && user) {
+    return {
+      isAuthenticated: true,
+      token,
+      user: JSON.parse(user),
+    };
+  } else {
+    return {
+      isAuthenticated: false,
+      token: undefined,
+      user: undefined,
+    };
+  }
+}
+
+function authentication(state = getInitialAuthenticationState(), action) {
+  switch (action.type) {
+    case "AUTHENTICATION_SUCCEEDED":
+      return {
+        ...state, // Not necessary because we set all properties, but a
+        // precaution should we later add more properties to this state slice.
+        isAuthenticated: true,
+        token: action.token,
+        user: action.user,
+      };
+    case "SIGNOUT":
+      return {
+        ...state,
+        isAuthenticated: false,
+        token: undefined,
+        user: undefined,
+      };
+    default:
+      return state;
+  }
+}
+
 const reducers = combineReducers({
   transactions,
   user,
+  authentication,
 });
 
 export default reducers;

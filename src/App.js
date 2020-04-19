@@ -14,54 +14,12 @@ import Dashboard from "./pages/Dashboard";
 import Transactions from "./pages/Transactions";
 import PrivateRoute from "./components/PrivateRoute";
 
-import * as api from "./api";
+import { connect } from "react-redux";
+import { authenticate, signout } from "./actions";
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-    const token = sessionStorage.getItem("token");
-    const user = sessionStorage.getItem("user");
-    if (token && user) {
-      this.state = {
-        isAuthenticated: true,
-        token,
-        user: JSON.parse(user)
-      };
-    } else {
-      this.state = {
-        isAuthenticated: false,
-        token: undefined,
-        user: undefined
-      };
-    }
-  }
-
-  authenticate = (login, password, callback) => {
-    api
-      .login(login, password)
-      .then(({ token, owner }) => {
-        this.setState({ isAuthenticated: true, token, user: owner });
-        sessionStorage.setItem("token", token);
-        sessionStorage.setItem("user", JSON.stringify(owner));
-        callback(null);
-      })
-      .catch(error => callback(error));
-  };
-
-  signout = callback => {
-    this.setState({
-      isAuthenticated: false,
-      token: undefined,
-      user: undefined
-    });
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
-    callback();
-  };
-
   render() {
-    const { isAuthenticated, user, token } = this.state;
-
+    const { isAuthenticated, user, token } = this.props;
     const MenuBar = withRouter(({ history, location: { pathname } }) => {
       if (isAuthenticated && user) {
         return (
@@ -87,7 +45,7 @@ class App extends React.Component {
                   <Menu.Item
                     name={`Logout ${user.firstname} ${user.lastname}`}
                     onClick={() => {
-                      this.signout(() => history.push("/"));
+                      this.props.signout(() => history.push("/"));
                     }}
                   />
                 </Menu.Menu>
@@ -114,7 +72,7 @@ class App extends React.Component {
           <Route
             path="/login"
             render={props => (
-              <Login {...props} authenticate={this.authenticate} />
+              <Login {...props} authenticate={this.props.authenticate} />
             )}
           />
           <Route path="/signup" component={Signup} />
@@ -137,4 +95,17 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: state.authentication.isAuthenticated,
+    user: state.authentication.user,
+    token: state.authentication.token,
+  };
+};
+
+const mapDispatchToProps = {
+  authenticate,
+  signout,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

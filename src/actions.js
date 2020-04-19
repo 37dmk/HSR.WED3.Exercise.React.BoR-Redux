@@ -38,3 +38,26 @@ export function transfer(target, amount, token) {
     });
   };
 }
+
+export function authenticate(login, password, callback) {
+  return (dispatch) => {
+    api
+      .login(login, password)
+      .then(({ token, owner }) => {
+        dispatch({ type: "AUTHENTICATION_SUCCEEDED", token, user: owner });
+        sessionStorage.setItem("token", token);
+        sessionStorage.setItem("user", JSON.stringify(owner));
+        callback(null);
+      })
+      .catch((error) => callback(error));
+  };
+}
+
+export function signout(callback) {
+  return (dispatch) => {
+    dispatch({ type: "SIGNOUT" });
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("user");
+    callback();
+  };
+}
