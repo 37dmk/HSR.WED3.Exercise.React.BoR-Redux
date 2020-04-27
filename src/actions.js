@@ -44,6 +44,7 @@ export function authenticate(login, password) {
   return (dispatch) => {
     return api.login(login, password).then(({ token, owner }) => {
       dispatch({ type: "AUTHENTICATION_SUCCEEDED", token, user: owner });
+      // TODO: handle token in Redux
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", JSON.stringify(owner));
     });
@@ -53,6 +54,7 @@ export function authenticate(login, password) {
 export function signout(callback) {
   return (dispatch) => {
     dispatch({ type: "SIGNOUT" });
+    // TODO: handle token in Redux
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
   };
@@ -67,6 +69,7 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
   let fromDate = "";
   let toDate = "";
 
+  // somehow i never get into the if statement
   if (filterByYear && filterByMonth) {
     fromDate = Moment(
       `01-${filterByMonth}-${filterByYear}`,
@@ -83,12 +86,14 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
 
   return (dispatch) => {
     dispatch({type: "FETCH_TRANS_START"});
+    dispatch({type: "SET_BY_MONTH", filterByMonth});
+    dispatch({type: "SET_BY_YEAR", filterByYear});
     return api.getTransactions(token,
         fromDate,
         toDate,
         itemsPerPage,
         skip,
-      ).then(({ result: transactions, query: { resultcount } }) => {
+      ).then(({ result: transactions }) => {
         dispatch({type: "FETCH_TRANS_SUCCESS", transactions})
       }).catch(
         (error) => dispatch({type: "FETCH_TRANS_FAIL", error})
@@ -96,6 +101,8 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
   }
 }
 
+/*
 export function filter(filterByYear, filterByMonth){
-  
+
 }
+*/
