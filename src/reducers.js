@@ -32,7 +32,8 @@ function filters(state = initialFilterState, action) {
   switch (action.type) {
     case "SET_BY_MONTH":
       return { ...state, filterByMonth: action.filterByMonth};
-      break;
+    default:
+      return state;
   }
 }
 

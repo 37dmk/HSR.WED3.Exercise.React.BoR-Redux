@@ -67,17 +67,17 @@ function Transactions({
 
 
   const handleYearFilterChanged = (event, { value }) => {
-    fetchTransactionsFiltered(this.props, { filterByYear: value, skip: 0 }, this.itemsPerPage);
+    fetchTransactionsFiltered(token, { filterByYear: value, skip: 0 }, itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleMonthFilterChanged = (event, { value }) => {
-    fetchTransactionsFiltered(this.props, { filterByMonth: value, skip: 0 }, this.itemsPerPage);
+    fetchTransactionsFiltered(token, { filterByMonth: value, skip: 0 }, itemsPerPage);
     // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleClearFilters = () => {
-    fetchTransactionsFiltered(this.props, { filterByMonth: undefined, filterByYear: undefined }, this.itemsPerPage);
+    fetchTransactionsFiltered(token, { filterByMonth: undefined, filterByYear: undefined }, itemsPerPage);
     // this.setState( { filterByMonth: undefined, filterByYear: undefined }, this.fetchTransactionsc);
   };
 
