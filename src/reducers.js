@@ -106,6 +106,7 @@ const reducers = combineReducers({
   transactions,
   user,
   authentication,
+  filters,
   // balance,
 });
 
