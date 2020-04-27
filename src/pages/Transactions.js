@@ -19,6 +19,10 @@ import {
   getUser,
   getTransactions,
   getFilterByMonth,
+  getFilterByYear,
+  getItemsPerPage,
+  getSkip,
+  getTotal,
 } from "../reducers";
 
 
@@ -31,6 +35,7 @@ function Transactions({
   token,
   user,
   transactions,
+  itemsPerPage,
   filterByMonth,
   filterByYear,
   skip,
@@ -137,7 +142,7 @@ function Transactions({
                   token,
                   filterByYear,
                   filterByMonth,
-                  (skip - this.itemsPerPage),
+                  (skip - itemsPerPage),
                   itemsPerPage
                 )
                 // use fetchTransactionsFiltered
@@ -150,11 +155,20 @@ function Transactions({
                 */
               }
               onForward={
+                fetchTransactionsFiltered(
+                  token,
+                  filterByYear,
+                  filterByMonth,
+                  (skip + itemsPerPage),
+                  itemsPerPage
+                )
+                /*
                 () =>
                 this.setState(
                   { skip: skip + this.itemsPerPage },
                   this.fetchTransactions
                 )
+                */
               }
             />
           ) : (
@@ -171,10 +185,10 @@ const mapStateToProps = (state) => {
     user: getUser(state),
     transactions: getTransactions(state),
     filterByMonth: getFilterByMonth(state),
-    filterByYear,
-    itemsPerPage,
-    skip,
-    total,
+    filterByYear: getFilterByYear(state),
+    itemsPerPage: getItemsPerPage(state),
+    skip: getSkip(state),
+    total: getTotal(state),
     error: getTransactionLoadingError(state),
   };
 };

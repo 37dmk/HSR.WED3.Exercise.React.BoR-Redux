@@ -20,8 +20,8 @@ function transactions(state = initialTransactionsState, action) {
 }
 
 const initialFilterState = {
-  itemsPerPage = 10,
-  transactions = undefined,
+  itemsPerPage: 10,
+  transactions: undefined,
   filterByMonth: undefined,
   filterByYear: undefined,
   skip: 0,
@@ -124,6 +124,22 @@ export function getUser(state) {
 
 export function getFilterByMonth(state) {
   return state.filters.filterByMonth;
+}
+
+export function getFilterByYear(state) {
+  return state.filters.filterByYear;
+}
+
+export function getItemsPerPage(state) {
+  return state.filters.itemsPerPage;
+}
+
+export function getSkip(state) {
+  return state.filters.skip;
+}
+
+export function getTotal(state) {
+  return state.filters.total;
 }
 
 export function getBalance(state) {
