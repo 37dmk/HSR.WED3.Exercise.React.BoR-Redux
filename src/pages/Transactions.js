@@ -7,13 +7,17 @@ import {
   Segment,
   Button
 } from "semantic-ui-react";
-import Moment from "moment";
 
-import { getTransactions } from "../api";
+import { connect } from "react-redux";
+import {
+  fetchTransactionsFiltered
+} from "../actions";
+
 import { YearDropdown } from "../components/YearDropdown";
 import { MonthDropdown } from "../components/MonthDropdown";
 import { PaginatedTransactionsTable } from "../components/PaginatedTransactionsTable";
 
+// TODO: 'Transactions' have to be in Redux-State too
 class Transactions extends React.Component {
   itemsPerPage = 10;
 
@@ -33,50 +37,22 @@ class Transactions extends React.Component {
   }
 
   fetchTransactions = () => {
-    const { token } = this.props;
-    const { filterByYear, filterByMonth, skip } = this.state;
-
-    let fromDate = "";
-    let toDate = "";
-
-    if (filterByYear && filterByMonth) {
-      fromDate = Moment(
-        `01-${filterByMonth}-${filterByYear}`,
-        "D-M-YYYY"
-      ).toISOString();
-      toDate = Moment(
-        `31-${filterByMonth}-${filterByYear}`,
-        "D-M-YYYY"
-      ).toISOString();
-    } else if (filterByYear) {
-      fromDate = Moment(`01-01-${filterByYear}`, "D-M-YYYY").toISOString();
-      toDate = Moment(`31-12-${filterByYear}`, "D-M-YYYY").toISOString();
-    }
-
-    getTransactions(
-      token,
-      fromDate,
-      toDate,
-      this.itemsPerPage,
-      skip
-    ).then(({ result: transactions, query: { resultcount } }) =>
-      this.setState({ transactions, total: resultcount })
-    );
-  };
+    fetchTransactionsFiltered(this.props, this.state, this.itemsPerPage);
+  }
 
   handleYearFilterChanged = (event, { value }) => {
-    this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
+    fetchTransactionsFiltered(this.props, { filterByYear: value, skip: 0 }, this.itemsPerPage);
+    // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
   handleMonthFilterChanged = (event, { value }) => {
-    this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
+    fetchTransactionsFiltered(this.props, { filterByMonth: value, skip: 0 }, this.itemsPerPage);
+    // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
   handleClearFilters = () => {
-    this.setState(
-      { filterByMonth: undefined, filterByYear: undefined },
-      this.fetchTransactions
-    );
+    fetchTransactionsFiltered(this.props, { filterByMonth: undefined, filterByYear: undefined }, this.itemsPerPage);
+    // this.setState( { filterByMonth: undefined, filterByYear: undefined }, this.fetchTransactionsc);
   };
 
   render() {
@@ -150,4 +126,16 @@ class Transactions extends React.Component {
   }
 }
 
-export default Transactions;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+    transactions: state.transactions,
+    amount: state.amount,
+  };
+};
+
+const mapDispatchToProps = {
+  fetchTransactionsFiltered,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transactions);

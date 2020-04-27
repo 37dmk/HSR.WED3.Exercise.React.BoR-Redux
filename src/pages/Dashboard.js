@@ -1,69 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Grid,
   Header,
   Dimmer,
   Loader,
-  Segment
+  Segment,
 } from "semantic-ui-react";
 import { Link } from "react-router-dom";
+
+import { connect } from "react-redux";
+import { fetchTransactions, fetchAccountDetails, transfer } from "../actions";
 
 import TransferFundsForm from "../components/TransferFundsForm";
 import TransactionsTable from "../components/TransactionsTable";
 
+import { getAccount } from "../api";
 import {
-  getAccountDetails,
-  getAccount,
-  transfer,
-  getTransactions
-} from "../api";
+  getTransactionLoadingError,
+  isLoadingTransactions,
+  getBalance,
+  getUser,
+  getTransactions,
+} from "../reducers";
 
-function Dashboard({ token }) {
-  const [user, setUser] = useState(undefined);
-  const [transactions, setTransactions] = useState(undefined);
-  const [amount, setAmount] = useState(undefined);
-
-  const isValidTargetAccount = accountNr => {
+function Dashboard({
+  token,
+  user,
+  balance,
+  transactions /* from mapStateToProps */,
+  isLoading /* from mapStateToProps */,
+  error /* from mapStateToProps */,
+  fetchTransactions /* from mapDispatchToProps */,
+  fetchAccountDetails /* from mapDispatchToProps */,
+  transfer /* from mapDispatchToProps */,
+}) {
+  const isValidTargetAccount = (accountNr) => {
     return getAccount(accountNr, token).then(
-      result => true,
-      failure => false
+      (result) => true,
+      (failure) => false
     );
   };
 
   const handleSubmit = (target, amount) => {
-    transfer(target, amount, token).then(result => {
-      // Transfer succeeded, we just re-fetch the account details
-      // instead of calculating the balance ourselves
-      getAccountDetails(token).then(({ amount, owner: user }) => {
-        setUser(user);
-        setAmount(amount);
-      });
-      // same for the transactions
-      getTransactions(token).then(({ result: transactions }) =>
-        setTransactions(transactions)
-      );
-    });
+    transfer(target, amount, token);
   };
 
   useEffect(() => {
     if (!user) {
-      getAccountDetails(token).then(({ amount, owner: user }) => {
-        setUser(user);
-        setAmount(amount);
-      });
+      fetchAccountDetails(token);
     }
-  }, [token, user]);
+  }, [fetchAccountDetails, token, user]);
 
   useEffect(() => {
     if (!transactions) {
-      getTransactions(token).then(({ result: transactions }) =>
-        setTransactions(transactions)
-      );
+      fetchTransactions(token);
     }
-  }, [token, transactions]);
+  }, [fetchTransactions, token, transactions]);
 
-  if (!user || !transactions) {
+  if (!user || !transactions || isLoading) {
     return (
       <Dimmer active inverted>
         <Loader inverted>Loading</Loader>
@@ -81,7 +76,7 @@ function Dashboard({ token }) {
             <Header as="h3" content="Neue Zahlung" />
             <TransferFundsForm
               accountNr={user.accountNr}
-              balance={amount}
+              balance={balance}
               isValidTargetAccount={isValidTargetAccount}
               onSubmit={handleSubmit}
             />
@@ -102,4 +97,31 @@ function Dashboard({ token }) {
   );
 }
 
-export default Dashboard;
+const mapStateToProps = (state) => {
+  return {
+    transactions: getTransactions(state),
+    user: getUser(state),
+    balance: getBalance(state),
+    isLoading: isLoadingTransactions(state),
+    error: getTransactionLoadingError(state),
+  };
+};
+
+const mapDispatchToProps = {
+  fetchTransactions,
+  fetchAccountDetails,
+  transfer,
+};
+
+/* Variante von mapDispatchToProps
+const mapDispatchToProps = (dispatch, { token }) => {
+  return {
+    fetchTransactions: () => dispatch(fetchTransactions(token)),
+    fetchAccountDetails: () => dispatch(fetchAccountDetails(token)),
+    handleTransfer: (target, amount) =>
+      dispatch(transfer(target, amount, token)),
+  };
+};
+*/
+
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -23,6 +23,7 @@ class App extends React.Component {
     const user = sessionStorage.getItem("user");
     if (token && user) {
       this.state = {
+        // TODO: 'isAuthenticated' has to be in Redux-State
         isAuthenticated: true,
         token,
         user: JSON.parse(user)
