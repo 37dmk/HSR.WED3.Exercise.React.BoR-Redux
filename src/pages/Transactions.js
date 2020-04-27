@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Grid,
   Header,
@@ -10,15 +10,34 @@ import {
 
 import { connect } from "react-redux";
 import {
-  fetchTransactionsFiltered
+  fetchTransactionsFiltered,
+  fetchAccountDetails,
+  fetchTransactions,
 } from "../actions";
+import {
+  getTransactionLoadingError,
+  getUser,
+  getTransactions,
+  getFilterByMonth,
+} from "../reducers";
+
 
 import { YearDropdown } from "../components/YearDropdown";
 import { MonthDropdown } from "../components/MonthDropdown";
 import { PaginatedTransactionsTable } from "../components/PaginatedTransactionsTable";
 
 // TODO: 'Transactions' have to be in Redux-State too
-class Transactions extends React.Component {
+function Transactions({
+  token,
+  user,
+  transactions,
+  filterByMonth,
+  filterByYear,
+  skip,
+  total,
+  error,
+}) {
+  /*  
   itemsPerPage = 10;
 
   state = {
@@ -29,32 +48,40 @@ class Transactions extends React.Component {
     total: 0
   };
 
-  componentDidMount() {
-    const { transactions } = this.state;
-    if (!transactions) {
-      this.fetchTransactions();
-    }
-  }
-
   fetchTransactions = () => {
     fetchTransactionsFiltered(this.props, this.state, this.itemsPerPage);
   }
+  */
 
-  handleYearFilterChanged = (event, { value }) => {
+  useEffect(() => {
+    if (!user) {
+      fetchAccountDetails(token);
+    }
+  }, [fetchAccountDetails, token, user]);
+
+  useEffect(() => {
+    if (!transactions) {
+      fetchTransactions(token);
+    }
+  }, [fetchTransactions, token, transactions]);
+
+
+  const handleYearFilterChanged = (event, { value }) => {
     fetchTransactionsFiltered(this.props, { filterByYear: value, skip: 0 }, this.itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
-  handleMonthFilterChanged = (event, { value }) => {
+  const handleMonthFilterChanged = (event, { value }) => {
     fetchTransactionsFiltered(this.props, { filterByMonth: value, skip: 0 }, this.itemsPerPage);
     // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
-  handleClearFilters = () => {
+  const handleClearFilters = () => {
     fetchTransactionsFiltered(this.props, { filterByMonth: undefined, filterByYear: undefined }, this.itemsPerPage);
     // this.setState( { filterByMonth: undefined, filterByYear: undefined }, this.fetchTransactionsc);
   };
 
+  /*
   render() {
     const { user } = this.props;
     const {
@@ -64,6 +91,7 @@ class Transactions extends React.Component {
       skip,
       total
     } = this.state;
+    */
 
     if (!transactions) {
       return (
@@ -85,17 +113,17 @@ class Transactions extends React.Component {
             <Grid.Column width={8}>
               <YearDropdown
                 value={filterByYear}
-                onChange={this.handleYearFilterChanged}
+                onChange={handleYearFilterChanged}
               />
             </Grid.Column>
             <Grid.Column width={7}>
               <MonthDropdown
-                onChange={this.handleMonthFilterChanged}
+                onChange={handleMonthFilterChanged}
                 value={filterByMonth}
               />
             </Grid.Column>
             <Grid.Column width={1}>
-              <Button fluid icon="remove" onClick={this.handleClearFilters} />
+              <Button fluid icon="remove" onClick={handleClearFilters} />
             </Grid.Column>
           </Grid>
           {transactions.length > 0 ? (
@@ -104,13 +132,25 @@ class Transactions extends React.Component {
               transactions={transactions}
               skip={skip}
               total={total}
-              onBack={() =>
+              onBack={
+                fetchTransactionsFiltered(
+                  token,
+                  filterByYear,
+                  filterByMonth,
+                  (skip - this.itemsPerPage),
+                  itemsPerPage
+                )
+                // use fetchTransactionsFiltered
+                /*
+                () =>
                 this.setState(
                   { skip: skip - this.itemsPerPage },
                   this.fetchTransactions
                 )
+                */
               }
-              onForward={() =>
+              onForward={
+                () =>
                 this.setState(
                   { skip: skip + this.itemsPerPage },
                   this.fetchTransactions
@@ -123,14 +163,19 @@ class Transactions extends React.Component {
         </Segment>
       </Segment.Group>
     );
-  }
+  // }
 }
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user,
-    transactions: state.transactions,
-    amount: state.amount,
+    user: getUser(state),
+    transactions: getTransactions(state),
+    filterByMonth: getFilterByMonth(state),
+    filterByYear,
+    itemsPerPage,
+    skip,
+    total,
+    error: getTransactionLoadingError(state),
   };
 };
 

@@ -19,6 +19,23 @@ function transactions(state = initialTransactionsState, action) {
   }
 }
 
+const initialFilterState = {
+  itemsPerPage = 10,
+  transactions = undefined,
+  filterByMonth: undefined,
+  filterByYear: undefined,
+  skip: 0,
+  total: 0,
+}
+
+function filters(state = initialFilterState, action) {
+  switch (action.type) {
+    case "SET_BY_MONTH":
+      return { ...state, filterByMonth: action.filterByMonth};
+      break;
+  }
+}
+
 const initialUserState = {
   balance: null,
   user: null,
@@ -101,6 +118,10 @@ export function getTransactions(state) {
 
 export function getUser(state) {
   return state.user.user;
+}
+
+export function getFilterByMonth(state) {
+  return state.filters.filterByMonth;
 }
 
 export function getBalance(state) {

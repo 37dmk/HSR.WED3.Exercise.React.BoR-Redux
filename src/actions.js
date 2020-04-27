@@ -63,7 +63,7 @@ export function signout(callback) {
 
 
 // EXCERCISE RESULTS! DO NOT DELETE!
-export function fetchTransactionsFiltered({ token }, { filterByYear, filterByMonth, skip }, itemsPerPage) {
+export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage) {
   let fromDate = "";
   let toDate = "";
 
@@ -94,4 +94,8 @@ export function fetchTransactionsFiltered({ token }, { filterByYear, filterByMon
         (error) => dispatch({type: "FETCH_TRANS_FAIL", error})
       );
   }
+}
+
+export function filter(filterByYear, filterByMonth){
+  
 }
