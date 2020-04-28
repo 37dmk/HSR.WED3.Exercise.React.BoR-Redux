@@ -69,6 +69,7 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
   let fromDate = "";
   let toDate = "";
 
+  /*
   // somehow i never get into the if statement
   if (filterByYear && filterByMonth) {
     fromDate = Moment(
@@ -83,11 +84,10 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
     fromDate = Moment(`01-01-${filterByYear}`, "D-M-YYYY").toISOString();
     toDate = Moment(`31-12-${filterByYear}`, "D-M-YYYY").toISOString();
   }
+  */
 
   return (dispatch) => {
     dispatch({type: "FETCH_TRANS_START"});
-    dispatch({type: "SET_BY_MONTH", filterByMonth});
-    dispatch({type: "SET_BY_YEAR", filterByYear});
     return api.getTransactions(token,
         fromDate,
         toDate,
@@ -101,8 +101,29 @@ export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, sk
   }
 }
 
-/*
-export function filter(filterByYear, filterByMonth){
 
+export function filterByDate(filterByYear, filterByMonth){
+  let fromDate = "";
+  let toDate = "";
+
+  // somehow i never get into the if statement
+  if (filterByYear && filterByMonth) {
+    fromDate = Moment(
+      `01-${filterByMonth}-${filterByYear}`,
+      "D-M-YYYY"
+    ).toISOString();
+    toDate = Moment(
+      `31-${filterByMonth}-${filterByYear}`,
+      "D-M-YYYY"
+    ).toISOString();
+    return (dispatch) => {
+      dispatch({type: "SET_BY_BOTH", filterByYear, filterByMonth});
+    }
+  } else if (filterByYear) {
+    fromDate = Moment(`01-01-${filterByYear}`, "D-M-YYYY").toISOString();
+    toDate = Moment(`31-12-${filterByYear}`, "D-M-YYYY").toISOString();
+    return (dispatch) => {
+      dispatch({type: "SET_BY_YEAR", filterByYear});
+    }
+  }
 }
-*/

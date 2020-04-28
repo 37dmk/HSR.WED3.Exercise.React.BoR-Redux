@@ -114,6 +114,7 @@ const mapDispatchToProps = {
 };
 
 /* Variante von mapDispatchToProps
+
 const mapDispatchToProps = (dispatch, { token }) => {
   return {
     fetchTransactions: () => dispatch(fetchTransactions(token)),

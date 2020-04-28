@@ -11,6 +11,7 @@ import {
 import { connect } from "react-redux";
 import {
   fetchTransactionsFiltered,
+  filterByDate,
   fetchAccountDetails,
   fetchTransactions,
 } from "../actions";
@@ -71,13 +72,15 @@ function Transactions({
   }, [fetchTransactions, token, transactions]);
 
 
-  const handleYearFilterChanged = (event, { value }) => {
-    fetchTransactionsFiltered(token, { filterByYear: value, skip: 0 }, itemsPerPage);
+  const handleYearFilterChanged = (/* event, { value } */) => {
+    filterByDate(filterByYear, filterByMonth);
+    // fetchTransactionsFiltered(token, { filterByYear: value, skip: 0 }, itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
-  const handleMonthFilterChanged = (event, { value }) => {
-    fetchTransactionsFiltered(token, { filterByMonth: value, skip: 0 }, itemsPerPage);
+  const handleMonthFilterChanged = (/*event, { value } */) => {
+    filterByDate(filterByYear, filterByMonth);
+    // fetchTransactionsFiltered(token, { filterByMonth: value, skip: 0 }, itemsPerPage);
     // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 

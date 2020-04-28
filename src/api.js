@@ -20,11 +20,15 @@ export function getAccountDetails(token) {
   return getAuthenticatedJson(`/accounts`, token).then(parseJSON);
 }
 
-export function getAccount(accountNr, token) {
+export function getAccount(accountNr: AccountNr, token) {
   return getAuthenticatedJson(`/accounts/${accountNr}`, token).then(parseJSON);
 }
 
-export function transfer( target, amount, token)/* : Promise<TransferResult> */{
+export function transfer(
+  target: AccountNr,
+  amount,
+  token
+): Promise<TransferResult> {
   return postAuthenticatedJson("/accounts/transactions", token, {
     target,
     amount
@@ -48,7 +52,7 @@ function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    const error = new Error(response.statusText);
+    const error: Object = new Error(response.statusText);
     error.response = response;
     throw error;
   }

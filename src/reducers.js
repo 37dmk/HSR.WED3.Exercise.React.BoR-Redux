@@ -30,10 +30,10 @@ const initialFilterState = {
 
 function filters(state = initialFilterState, action) {
   switch (action.type) {
-    case "SET_BY_MONTH":
-      return { ...state, filterByMonth: action.filterByMonth};
     case "SET_BY_YEAR":
       return { ...state, filterByYear: action.filterByYear};
+    case "SET_BY_BOTH":
+      return { ...state, filterByYear: action.filterByYear, filterByMonth: action.filterByMonth};
     default:
       return state;
   }
