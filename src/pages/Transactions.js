@@ -11,9 +11,12 @@ import {
 import { connect } from "react-redux";
 import {
   fetchTransactionsFiltered,
-  filterByDate,
   fetchAccountDetails,
   fetchTransactions,
+  setFilterYear,
+  setFilterMonth,
+  setFilterSkip,
+  setFilterItems,
 } from "../actions";
 import {
   getTransactionLoadingError,
@@ -73,20 +76,24 @@ function Transactions({
 
 
   const handleYearFilterChanged = (/* event, { value } */) => {
-    filterByDate(filterByYear, filterByMonth);
-    // fetchTransactionsFiltered(token, { filterByYear: value, skip: 0 }, itemsPerPage);
+    setFilterYear(filterByYear);
+    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleMonthFilterChanged = (/*event, { value } */) => {
-    filterByDate(filterByYear, filterByMonth);
-    // fetchTransactionsFiltered(token, { filterByMonth: value, skip: 0 }, itemsPerPage);
+    setFilterMonth(filterByMonth);
+    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
     // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleClearFilters = () => {
-    fetchTransactionsFiltered(token, { filterByMonth: undefined, filterByYear: undefined }, itemsPerPage);
-    // this.setState( { filterByMonth: undefined, filterByYear: undefined }, this.fetchTransactionsc);
+    setFilterYear(undefined);
+    setFilterMonth(undefined);
+    setFilterSkip(0);
+    setFilterItems(10);
+    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+    // this.setState( { filterByMonth: undefined, filterByYear: undefined }, fetchTransactions);
   };
 
   /*
@@ -141,12 +148,8 @@ function Transactions({
               skip={skip}
               total={total}
               onBack={
-                fetchTransactionsFiltered(
-                  token,
-                  filterByYear,
-                  filterByMonth,
+                setFilterSkip(
                   (skip - itemsPerPage),
-                  itemsPerPage
                 )
                 // use fetchTransactionsFiltered
                 /*
@@ -158,12 +161,8 @@ function Transactions({
                 */
               }
               onForward={
-                fetchTransactionsFiltered(
-                  token,
-                  filterByYear,
-                  filterByMonth,
+                setFilterSkip(
                   (skip + itemsPerPage),
-                  itemsPerPage
                 )
                 /*
                 () =>
@@ -197,7 +196,11 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  fetchTransactionsFiltered,
+  fetchTransactions,
+  setFilterYear,
+  setFilterMonth,
+  setFilterSkip,
+  setFilterItems,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Transactions);

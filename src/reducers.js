@@ -21,7 +21,6 @@ function transactions(state = initialTransactionsState, action) {
 
 const initialFilterState = {
   itemsPerPage: 10,
-  transactions: undefined,
   filterByMonth: undefined,
   filterByYear: undefined,
   skip: 0,
@@ -30,10 +29,26 @@ const initialFilterState = {
 
 function filters(state = initialFilterState, action) {
   switch (action.type) {
-    case "SET_BY_YEAR":
-      return { ...state, filterByYear: action.filterByYear};
-    case "SET_BY_BOTH":
-      return { ...state, filterByYear: action.filterByYear, filterByMonth: action.filterByMonth};
+    case "SET_YEAR":
+      return {
+        ...state,
+        filterByYear: action.filterByYear
+      };
+    case "SET_MONTH":
+      return {
+        ...state,
+        filterByYear: action.filterByMonth
+      };
+    case "SET_SKIP":
+      return {
+        ...state,
+        filterByYear: action.skip
+      };
+    case "SET_ITEMS":
+      return {
+        ...state,
+        filterByYear: action.itemsPerPage
+      };
     default:
       return state;
   }
