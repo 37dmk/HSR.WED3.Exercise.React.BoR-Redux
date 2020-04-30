@@ -71,9 +71,9 @@ function Transactions({
 
   useEffect(() => {
     if (!transactions) {
-      fetchTransactions(token);
+      fetchTransactionsFiltered(token);
     }
-  }, [fetchTransactions, token, transactions]);
+  }, [fetchTransactionsFiltered, token, transactions]);
 
 
   const handleYearFilterChanged = (evt, { value }) => {
@@ -94,16 +94,18 @@ function Transactions({
     setFilterMonth(undefined);
     setFilterSkip(0);
     setFilterItems(10);
-    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+    fetchTransactionsFiltered(token, undefined, undefined, 0, 10);
     // this.setState( { filterByMonth: undefined, filterByYear: undefined }, fetchTransactions);
   };
 
+  // Does not get executed at all
   const handleSkipBack = () => {
     skip -= itemsPerPage;
     setFilterSkip(skip);
     fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
   }
 
+  // Does not get executed at all
   const handleSkipForward = () => {
     skip -= itemsPerPage;
     setFilterSkip(skip);
