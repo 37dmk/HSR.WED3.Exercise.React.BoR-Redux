@@ -44,7 +44,7 @@ function Transactions({
   filterByYear,
   skip,
   total,
-  fetchTransactions,
+  fetchTransactionsFiltered,
   setFilterYear,
   setFilterMonth,
   setFilterSkip,
@@ -77,6 +77,7 @@ function Transactions({
 
 
   const handleYearFilterChanged = (evt, { value }) => {
+    filterByMonth = value;
     setFilterYear( value );
     fetchTransactionsFiltered(token, value, filterByMonth, skip, itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
@@ -175,7 +176,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
-  fetchTransactions,
+  fetchTransactionsFiltered,
   setFilterYear,
   setFilterMonth,
   setFilterSkip,

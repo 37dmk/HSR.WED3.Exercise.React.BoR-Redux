@@ -63,12 +63,37 @@ export function signout(callback) {
 
 
 
-
 // EXCERCISE RESULTS! DO NOT DELETE!
 export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage) {
+
+/*   let monthStringFrom = "";
+  let monthStringTo = "";
+
+  if(filterByMonth){
+    monthStringFrom += `01-${(filterByMonth<10)? `0${filterByMonth}`: filterByMonth}`;
+    monthStringTo += `31-${(filterByMonth<10)? `0${filterByMonth}`: filterByMonth}`;
+  } else {
+    monthStringFrom += "01-01-";
+    monthStringTo += "31-12-";
+  }
+
+  let yearStringFrom = "";
+  let yearStringTo = "";
+
+  if(filterByYear){
+    yearStringFrom += `${filterByYear}`;
+    yearStringTo += `${filterByYear}`;
+  } else {
+    yearStringFrom += new Date().getFullYear().toString().substr(-2);
+    yearStringTo += new Date().getFullYear().toString().substr(-2);
+  }
+
+  let fromDate = Moment(`${monthStringFrom}${yearStringFrom}`, "D-M-YYYY").toISOString();
+  let toDate = Moment(`${monthStringFrom}${yearStringTo}`, "D-M-YYYY").toISOString();
+ */
+
   let fromDate = "";
   let toDate = "";
-
   // somehow i never get into the if statement
   if (filterByYear && filterByMonth) {
     fromDate = Moment(
