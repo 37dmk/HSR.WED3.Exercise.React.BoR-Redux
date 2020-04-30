@@ -97,6 +97,18 @@ function Transactions({
     // this.setState( { filterByMonth: undefined, filterByYear: undefined }, fetchTransactions);
   };
 
+  const handleSkipBack = () => {
+    skip -= itemsPerPage;
+    setFilterSkip(skip);
+    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+  }
+
+  const handleSkipForward = () => {
+    skip -= itemsPerPage;
+    setFilterSkip(skip);
+    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+  }
+
     if (!transactions) {
       return (
         <Dimmer active inverted>
@@ -137,17 +149,9 @@ function Transactions({
               skip={skip}
               total={total}
               // NOT WORKING
-              onBack={
-                setFilterSkip(
-                  (skip - itemsPerPage),
-                )
-              }
+              onBack={handleSkipBack}
               // NOT WORKING
-              onForward={
-                setFilterSkip(
-                  (skip + itemsPerPage),
-                )
-              }
+              onForward={handleSkipForward}
             />
           ) : (
             <p>In diesem Zeitraum wurden keine Transaktionen getätigt</p>
