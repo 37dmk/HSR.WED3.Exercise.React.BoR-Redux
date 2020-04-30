@@ -28,6 +28,7 @@ const initialFilterState = {
 }
 
 function filters(state = initialFilterState, action) {
+  console.log(state);
   switch (action.type) {
     case "SET_YEAR":
       return {

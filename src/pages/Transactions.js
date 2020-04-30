@@ -76,15 +76,15 @@ function Transactions({
   }, [fetchTransactions, token, transactions]);
 
 
-  const handleYearFilterChanged = (/* event, { value } */) => {
-    setFilterYear(filterByYear);
-    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+  const handleYearFilterChanged = (evt, { value }) => {
+    setFilterYear( value );
+    fetchTransactionsFiltered(token, value, filterByMonth, skip, itemsPerPage);
     // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
-  const handleMonthFilterChanged = (/*event, { value } */) => {
-    setFilterMonth(filterByMonth);
-    fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
+  const handleMonthFilterChanged = (evt, { value }) => {
+    setFilterMonth(value);
+    fetchTransactionsFiltered(token, filterByYear, value, skip, itemsPerPage);
     // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
