@@ -44,6 +44,11 @@ function Transactions({
   filterByYear,
   skip,
   total,
+  fetchTransactions,
+  setFilterYear,
+  setFilterMonth,
+  setFilterSkip,
+  setFilterItems,
   error,
 }) {
   /*  
@@ -56,10 +61,6 @@ function Transactions({
     skip: 0,
     total: 0
   };
-
-  fetchTransactions = () => {
-    fetchTransactionsFiltered(this.props, this.state, this.itemsPerPage);
-  }
   */
 
   useEffect(() => {
@@ -95,18 +96,6 @@ function Transactions({
     fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
     // this.setState( { filterByMonth: undefined, filterByYear: undefined }, fetchTransactions);
   };
-
-  /*
-  render() {
-    const { user } = this.props;
-    const {
-      transactions,
-      filterByMonth,
-      filterByYear,
-      skip,
-      total
-    } = this.state;
-    */
 
     if (!transactions) {
       return (
@@ -147,30 +136,17 @@ function Transactions({
               transactions={transactions}
               skip={skip}
               total={total}
+              // NOT WORKING
               onBack={
                 setFilterSkip(
                   (skip - itemsPerPage),
                 )
-                // use fetchTransactionsFiltered
-                /*
-                () =>
-                this.setState(
-                  { skip: skip - this.itemsPerPage },
-                  this.fetchTransactions
-                )
-                */
               }
+              // NOT WORKING
               onForward={
                 setFilterSkip(
                   (skip + itemsPerPage),
                 )
-                /*
-                () =>
-                this.setState(
-                  { skip: skip + this.itemsPerPage },
-                  this.fetchTransactions
-                )
-                */
               }
             />
           ) : (
@@ -179,7 +155,6 @@ function Transactions({
         </Segment>
       </Segment.Group>
     );
-  // }
 }
 
 const mapStateToProps = (state) => {

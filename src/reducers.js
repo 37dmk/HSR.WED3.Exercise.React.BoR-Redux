@@ -37,17 +37,17 @@ function filters(state = initialFilterState, action) {
     case "SET_MONTH":
       return {
         ...state,
-        filterByYear: action.filterByMonth
+        filterByMonth: action.filterByMonth
       };
     case "SET_SKIP":
       return {
         ...state,
-        filterByYear: action.skip
+        skip: action.skip
       };
     case "SET_ITEMS":
       return {
         ...state,
-        filterByYear: action.itemsPerPage
+        itemsPerPage: action.itemsPerPage
       };
     default:
       return state;
