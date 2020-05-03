@@ -113,16 +113,4 @@ const mapDispatchToProps = {
   transfer,
 };
 
-/* Variante von mapDispatchToProps
-
-const mapDispatchToProps = (dispatch, { token }) => {
-  return {
-    fetchTransactions: () => dispatch(fetchTransactions(token)),
-    fetchAccountDetails: () => dispatch(fetchAccountDetails(token)),
-    handleTransfer: (target, amount) =>
-      dispatch(transfer(target, amount, token)),
-  };
-};
-*/
-
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);

@@ -64,6 +64,7 @@ function App({ isAuthenticated, user, token, ...props }) {
         <Route
           exact
           path="/"
+          // remove token and isAuthenticated props
           render={(props) => (
             <Home {...props} isAuthenticated={isAuthenticated} />
           )}
@@ -71,12 +72,14 @@ function App({ isAuthenticated, user, token, ...props }) {
         <Route path="/login" component={Login} />
         <Route path="/signup" component={Signup} />
         <PrivateRoute
+          // remove token and isAuthenticated props
           isAuthenticated={isAuthenticated}
           token={token}
           path="/dashboard"
           component={Dashboard}
         />
         <PrivateRoute
+          // remove token and isAuthenticated props
           isAuthenticated={isAuthenticated}
           token={token}
           user={user}

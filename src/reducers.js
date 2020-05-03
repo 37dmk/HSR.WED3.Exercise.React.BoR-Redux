@@ -140,6 +140,10 @@ export function getUser(state) {
   return state.user.user;
 }
 
+export function getAuthenticationSate(state){
+  return state.isAuthenticated;
+}
+
 export function getFilterByMonth(state) {
   return state.filters.filterByMonth;
 }

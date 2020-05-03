@@ -81,7 +81,9 @@ function Login({ location, authenticate }) {
 }
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    
+  };
 };
 
 const mapDispatchToProps = {

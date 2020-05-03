@@ -34,7 +34,6 @@ import { YearDropdown } from "../components/YearDropdown";
 import { MonthDropdown } from "../components/MonthDropdown";
 import { PaginatedTransactionsTable } from "../components/PaginatedTransactionsTable";
 
-// TODO: 'Transactions' have to be in Redux-State too
 function Transactions({
   token,
   user,
@@ -51,18 +50,6 @@ function Transactions({
   setFilterItems,
   error,
 }) {
-  /*  
-  itemsPerPage = 10;
-
-  state = {
-    transactions: undefined,
-    filterByMonth: undefined,
-    filterByYear: undefined,
-    skip: 0,
-    total: 0
-  };
-  */
-
   useEffect(() => {
     if (!user) {
       fetchAccountDetails(token);
@@ -79,13 +66,11 @@ function Transactions({
   const handleYearFilterChanged = (evt, { value }) => {
     setFilterYear( value );
     fetchTransactionsFiltered(token, value, filterByMonth, skip, itemsPerPage);
-    // this.setState({ filterByYear: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleMonthFilterChanged = (evt, { value }) => {
     setFilterMonth(value);
     fetchTransactionsFiltered(token, filterByYear, value, skip, itemsPerPage);
-    // this.setState({ filterByMonth: value, skip: 0 }, this.fetchTransactions);
   };
 
   const handleClearFilters = () => {
@@ -94,7 +79,6 @@ function Transactions({
     setFilterSkip(0);
     setFilterItems(10);
     fetchTransactionsFiltered(token, undefined, undefined, 0, 10);
-    // this.setState( { filterByMonth: undefined, filterByYear: undefined }, fetchTransactions);
   };
 
   // Does not get executed at all
@@ -111,56 +95,56 @@ function Transactions({
     fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage);
   }
 
-    if (!transactions) {
-      return (
-        <Dimmer active inverted>
-          <Loader inverted>Loading</Loader>
-        </Dimmer>
-      );
-    }
-
+  if (!transactions) {
     return (
-      <Segment.Group>
-        <Segment>
-          <Header as="h1">
-            All Transaktionen des Accounts {user.accountNr}
-          </Header>
-        </Segment>
-        <Segment>
-          <Grid>
-            <Grid.Column width={8}>
-              <YearDropdown
-                value={filterByYear}
-                onChange={handleYearFilterChanged}
-              />
-            </Grid.Column>
-            <Grid.Column width={7}>
-              <MonthDropdown
-                onChange={handleMonthFilterChanged}
-                value={filterByMonth}
-              />
-            </Grid.Column>
-            <Grid.Column width={1}>
-              <Button fluid icon="remove" onClick={handleClearFilters} />
-            </Grid.Column>
-          </Grid>
-          {transactions.length > 0 ? (
-            <PaginatedTransactionsTable
-              user={user}
-              transactions={transactions}
-              skip={skip}
-              total={total}
-              // NOT WORKING
-              onBack={handleSkipBack}
-              // NOT WORKING
-              onForward={handleSkipForward}
-            />
-          ) : (
-            <p>In diesem Zeitraum wurden keine Transaktionen getätigt</p>
-          )}
-        </Segment>
-      </Segment.Group>
+      <Dimmer active inverted>
+        <Loader inverted>Loading</Loader>
+      </Dimmer>
     );
+  }
+
+  return (
+    <Segment.Group>
+      <Segment>
+        <Header as="h1">
+          All Transaktionen des Accounts {user.accountNr}
+        </Header>
+      </Segment>
+      <Segment>
+        <Grid>
+          <Grid.Column width={8}>
+            <YearDropdown
+              value={filterByYear}
+              onChange={handleYearFilterChanged}
+            />
+          </Grid.Column>
+          <Grid.Column width={7}>
+            <MonthDropdown
+              onChange={handleMonthFilterChanged}
+              value={filterByMonth}
+            />
+          </Grid.Column>
+          <Grid.Column width={1}>
+            <Button fluid icon="remove" onClick={handleClearFilters} />
+          </Grid.Column>
+        </Grid>
+        {transactions.length > 0 ? (
+          <PaginatedTransactionsTable
+            user={user}
+            transactions={transactions}
+            skip={skip}
+            total={total}
+            // NOT WORKING
+            onBack={handleSkipBack}
+            // NOT WORKING
+            onForward={handleSkipForward}
+          />
+        ) : (
+          <p>In diesem Zeitraum wurden keine Transaktionen getätigt</p>
+        )}
+      </Segment>
+    </Segment.Group>
+  );
 }
 
 const mapStateToProps = (state) => {

@@ -41,10 +41,10 @@ export function transfer(target, amount, token) {
 }
 
 export function authenticate(login, password) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     return api.login(login, password).then(({ token, owner }) => {
       dispatch({ type: "AUTHENTICATION_SUCCEEDED", token, user: owner });
-      // TODO: handle token in Redux
+      // This is where the Token gets set
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", JSON.stringify(owner));
     });
@@ -52,24 +52,22 @@ export function authenticate(login, password) {
 }
 
 export function signout(callback) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: "SIGNOUT" });
-    // TODO: handle token in Redux
+    // This is where the Token gets removed
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
   };
 }
 
 
-
-
-// EXCERCISE RESULTS! DO NOT DELETE!
+// Function for attestation
 export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage) {
 
   let fromDate = "";
   let toDate = "";
 
-  // This statement seems to be doing odd things and does not get triggered if i only use filterByMonth
+  // This statement may be cause of a Memory Leak
   if (filterByYear && filterByMonth) {
     fromDate = Moment(
       `01-${filterByMonth}-${filterByYear}`,
