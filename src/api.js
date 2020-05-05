@@ -24,7 +24,11 @@ export function getAccount(accountNr, token) {
   return getAuthenticatedJson(`/accounts/${accountNr}`, token).then(parseJSON);
 }
 
-export function transfer( target, amount, token)/* : Promise<TransferResult> */{
+export function transfer(
+  target,
+  amount,
+  token
+) {
   return postAuthenticatedJson("/accounts/transactions", token, {
     target,
     amount

@@ -41,9 +41,10 @@ export function transfer(target, amount, token) {
 }
 
 export function authenticate(login, password) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     return api.login(login, password).then(({ token, owner }) => {
       dispatch({ type: "AUTHENTICATION_SUCCEEDED", token, user: owner });
+      // This is where the Token gets set
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("user", JSON.stringify(owner));
     });
@@ -51,22 +52,22 @@ export function authenticate(login, password) {
 }
 
 export function signout(callback) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: "SIGNOUT" });
+    // This is where the Token gets removed
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("user");
   };
 }
 
 
+// Function for attestation
+export function fetchTransactionsFiltered(token, filterByYear, filterByMonth, skip, itemsPerPage) {
 
-
-
-// EXCERCISE RESULTS! DO NOT DELETE!
-export function fetchTransactionsFiltered({ token }, { filterByYear, filterByMonth, skip }, itemsPerPage) {
   let fromDate = "";
   let toDate = "";
 
+  // This statement may be cause of a Memory Leak
   if (filterByYear && filterByMonth) {
     fromDate = Moment(
       `01-${filterByMonth}-${filterByYear}`,
@@ -83,15 +84,40 @@ export function fetchTransactionsFiltered({ token }, { filterByYear, filterByMon
 
   return (dispatch) => {
     dispatch({type: "FETCH_TRANS_START"});
-    return api.getTransactions(token,
+    return api.getTransactions(
+        token,
         fromDate,
         toDate,
         itemsPerPage,
         skip,
-      ).then(({ result: transactions, query: { resultcount } }) => {
+      ).then(({ result: transactions }) => {
         dispatch({type: "FETCH_TRANS_SUCCESS", transactions})
       }).catch(
         (error) => dispatch({type: "FETCH_TRANS_FAIL", error})
       );
+  }
+}
+
+export function setFilterYear(filterByYear){
+  return (dispatch)=>{
+    dispatch({type: "SET_YEAR", filterByYear});
+  }
+}
+
+export function setFilterMonth(filterByMonth){
+  return (dispatch)=>{
+    dispatch({type: "SET_MONTH", filterByMonth});
+  }
+}
+
+export function setFilterSkip(skip){
+  return (dispatch)=>{
+    dispatch({type: "SET_SKIP", skip});
+  }
+}
+
+export function setFilterItems(itemsPerPage){
+  return (dispatch)=>{
+    dispatch({type: "SET_ITEMS", itemsPerPage});
   }
 }

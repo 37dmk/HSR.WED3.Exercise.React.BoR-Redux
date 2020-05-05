@@ -4,6 +4,11 @@ import { Button, Grid, Header } from "semantic-ui-react";
 import { Segment } from "semantic-ui-react";
 import { Redirect } from "react-router";
 
+
+import { connect } from "react-redux";
+import { getAuthenticationState } from "../reducers";
+
+
 const Home = ({ isAuthenticated }) => (
   <Grid className="HomeScreen" verticalAlign="middle" centered={true}>
     <Grid.Column>
@@ -34,4 +39,12 @@ const Home = ({ isAuthenticated }) => (
   </Grid>
 );
 
-export default Home;
+
+const mapStateToProps = (state) => {
+  return {
+    isAuthenticated: getAuthenticationState(state),
+  };
+};
+
+
+export default connect(mapStateToProps)(Home);

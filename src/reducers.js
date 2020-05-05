@@ -19,6 +19,42 @@ function transactions(state = initialTransactionsState, action) {
   }
 }
 
+const initialFilterState = {
+  itemsPerPage: 10,
+  filterByMonth: undefined,
+  filterByYear: undefined,
+  skip: 0,
+  total: 0,
+}
+
+function filters(state = initialFilterState, action) {
+  console.log(state);
+  switch (action.type) {
+    case "SET_YEAR":
+      return {
+        ...state,
+        filterByYear: action.filterByYear
+      };
+    case "SET_MONTH":
+      return {
+        ...state,
+        filterByMonth: action.filterByMonth
+      };
+    case "SET_SKIP":
+      return {
+        ...state,
+        skip: action.skip
+      };
+    case "SET_ITEMS":
+      return {
+        ...state,
+        itemsPerPage: action.itemsPerPage
+      };
+    default:
+      return state;
+  }
+}
+
 const initialUserState = {
   balance: null,
   user: null,
@@ -88,6 +124,7 @@ const reducers = combineReducers({
   transactions,
   user,
   authentication,
+  filters,
   // balance,
 });
 
@@ -101,6 +138,34 @@ export function getTransactions(state) {
 
 export function getUser(state) {
   return state.user.user;
+}
+
+export function getAuthenticationState(state){
+  return state.authentication.isAuthenticated;
+}
+
+export function getAuthenticationToken(state){
+  return state.authentication.token;
+}
+
+export function getFilterByMonth(state) {
+  return state.filters.filterByMonth;
+}
+
+export function getFilterByYear(state) {
+  return state.filters.filterByYear;
+}
+
+export function getItemsPerPage(state) {
+  return state.filters.itemsPerPage;
+}
+
+export function getSkip(state) {
+  return state.filters.skip;
+}
+
+export function getTotal(state) {
+  return state.filters.total;
 }
 
 export function getBalance(state) {
