@@ -21,12 +21,13 @@ import {
   isLoadingTransactions,
   getBalance,
   getUser,
+  getAuthenticationToken,
   getTransactions,
 } from "../reducers";
 
 function Dashboard({
-  token,
   user,
+  token, 
   balance,
   transactions /* from mapStateToProps */,
   isLoading /* from mapStateToProps */,
@@ -101,6 +102,7 @@ const mapStateToProps = (state) => {
   return {
     transactions: getTransactions(state),
     user: getUser(state),
+    token: getAuthenticationToken(state),
     balance: getBalance(state),
     isLoading: isLoadingTransactions(state),
     error: getTransactionLoadingError(state),

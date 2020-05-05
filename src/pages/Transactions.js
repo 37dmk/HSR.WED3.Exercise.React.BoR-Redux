@@ -12,7 +12,6 @@ import { connect } from "react-redux";
 import {
   fetchTransactionsFiltered,
   fetchAccountDetails,
-  fetchTransactions,
   setFilterYear,
   setFilterMonth,
   setFilterSkip,
@@ -43,6 +42,7 @@ function Transactions({
   filterByYear,
   skip,
   total,
+  fetchAccountDetails,
   fetchTransactionsFiltered,
   setFilterYear,
   setFilterMonth,
@@ -161,6 +161,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = {
+  fetchAccountDetails,
   fetchTransactionsFiltered,
   setFilterYear,
   setFilterMonth,

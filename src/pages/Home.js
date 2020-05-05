@@ -6,7 +6,7 @@ import { Redirect } from "react-router";
 
 
 import { connect } from "react-redux";
-import { getAuthenticationSate } from "../reducers";
+import { getAuthenticationState } from "../reducers";
 
 
 const Home = ({ isAuthenticated }) => (
@@ -42,7 +42,7 @@ const Home = ({ isAuthenticated }) => (
 
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: getAuthenticationSate(state),
+    isAuthenticated: getAuthenticationState(state),
   };
 };
 

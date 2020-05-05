@@ -140,8 +140,12 @@ export function getUser(state) {
   return state.user.user;
 }
 
-export function getAuthenticationSate(state){
-  return state.isAuthenticated;
+export function getAuthenticationState(state){
+  return state.authentication.isAuthenticated;
+}
+
+export function getAuthenticationToken(state){
+  return state.authentication.token;
 }
 
 export function getFilterByMonth(state) {

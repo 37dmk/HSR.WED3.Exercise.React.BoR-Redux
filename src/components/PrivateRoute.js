@@ -1,19 +1,20 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
 
-/*
+
 // This would introduce the redux state actions
 import { connect } from "react-redux";
 import {
-  getAuthenticationSate,
   getUser,
+  getAuthenticationState,
+  getAuthenticationToken,
 } from "../reducers";
-*/
+
 
 function PrivateRoute({
   component, 
-  isAuthenticated, 
   user, 
+  isAuthenticated, 
   token, 
   ...rest 
 }) {
@@ -42,17 +43,18 @@ function PrivateRoute({
   }
 }
 
-/*
+
 // Introducing the redux state in this part does NOT work somehow
 const mapStateToProps = (state) => {
   return {
-    isAuthenticated: getAuthenticationSate(state),
+    isAuthenticated: getAuthenticationState(state),
     user: getUser(state),
+    token: getAuthenticationToken(state),
   };
 };
 
 export default connect(mapStateToProps)(PrivateRoute);
-*/
 
 
-export default PrivateRoute;
+
+// export default PrivateRoute;
